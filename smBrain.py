@@ -18,17 +18,17 @@ class MySMClass(sm.SM):
         i6=inp.sonars[6]
         i7=inp.sonars[7]
         
-        if self.state=='DRIVE':         # pocetna pozicija robota
-            if i4>0.5 and i5>0.5:       # nema prepreke
+        if self.state=='DRIVE':         # start position
+            if i4>0.5 and i5>0.5:       
                return (state, io.Action(fvel = 0.3, rvel = 0))
-            else:                       # ima prepreke
+            else:                      
                 if i7>0.35: 
                    return (state, io.Action(fvel = 0.03, rvel = 0.27))
                 else:
                    return ('F', io.Action(fvel = 0.03, rvel = 0.27))
 
-        if self.state=='F':             # kada dodje do zida, prati zid
-            if 0.30<i7 and i7<0.31:       # na rastojanju 0.3-0.31m
+        if self.state=='F':             # follow wall
+            if 0.30<i7 and i7<0.31:       
                 if i4>0.5 and i5>0.5:
                    return ('F', io.Action(fvel = 0.3, rvel = 0))
                 elif i5>0.5 and i6>0.4:
@@ -36,10 +36,10 @@ class MySMClass(sm.SM):
                 else:
                     return ('F', io.Action(fvel = 0.03, rvel = 0.27))
 
-            elif i7<0.3:                # previse blizu zida
+            elif i7<0.3:               
                     return ('F', io.Action(fvel = 0.03, rvel = 0.27))
  
-            elif i7>0.3 and (i4<0.35 or i5<0.35): # previse daleko od zida
+            elif i7>0.3 and (i4<0.35 or i5<0.35):
                     return ('F', io.Action(fvel = 0.03, rvel = 0.27))
             else:
                     return ('F', io.Action(fvel = 0.12, rvel = -0.27))
@@ -72,11 +72,3 @@ def step():
     print inp.sonars[1], 
     robot.behavior.step(inp).execute()
     io.done(robot.behavior.isDone())
-
-# called when the stop button is pushed
-def brainStop():
-    pass
-
-# called when brain or world is reloaded (before setup)
-def shutdown():
-    pass
